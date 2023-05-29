@@ -7,7 +7,7 @@ cd /roms/retroverse
 git pull
 
 # cp and overwrite all pulled files into the retroverse system
-/bin/cp -rf ./* /
+rsync -a ./* /
 
 # apply patches if any
 chmod 755 -R /emuelec/scripts/
