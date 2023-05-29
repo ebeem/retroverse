@@ -1,0 +1,26 @@
+#!/bin/python
+from pathlib import Path
+import xml.etree.ElementTree as ET
+import re
+
+disc_regex = r"\(Disc \d\)"
+
+# check every gamelist.xml file in roms directory
+for path in Path("/storage/roms").rglob("*/gamelist.xml"):
+    print("parsing " + str(path.absolute()))
+    made_changes = False
+
+    # parsing all title names
+    doc = ET.parse(path)
+
+    for game in doc.findall("game"):
+        game_path = game.find("path").text
+        reg = re.search(disc_regex, game_path)
+        if reg is not None:
+            new_game_title = game.find("name").text + " " + reg.group(0)
+            game.find("name").text = new_game_title
+            made_changes = True
+
+    if made_changes:
+        print("writing " + str(path.absolute()))
+        doc.write(path)
