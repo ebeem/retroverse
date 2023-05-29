@@ -1,17 +1,17 @@
 #!/bin/bash
 
 # go to the retroverse directory, this should be a fixed path
-cd /roms/retroverse
+cd /storage/roms/retroverse
 
 # pull latest changes from the repository
 git pull
 
 # cp and overwrite all pulled files into the retroverse system
-rsync -a ./* /
+rsync -a --exclude '.git' ./* /
 
 # apply patches if any
-chmod 755 -R /emuelec/scripts/
-for file in /emuelec/scripts/patches/*; do
+chmod 755 -R /storage/.config/emuelec/scripts/
+for file in /storage/.config/emuelec/scripts/patches/*; do
     echo "applying patch $file"
     "$file"
 done

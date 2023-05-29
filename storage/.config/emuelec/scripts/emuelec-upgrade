@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /roms/retroverse
+cd /storage/roms/retroverse
 
 # check if any updates are available
 if [ "$1" == "canupdate" ]; then
@@ -17,5 +17,5 @@ if [ "$1" == "canupdate" ]; then
 fi
 
 # run the update script
-chmod 755 -R /roms/retroverse/emuelec/scripts
-./emuelec/scripts/retroverse-update
+chmod 755 -R /storage/roms/storage/.config/emuelec/scripts
+/storage/roms/storage/.config/emuelec/scripts/retroverse-update
