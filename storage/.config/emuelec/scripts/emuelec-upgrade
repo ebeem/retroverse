@@ -17,13 +17,6 @@ if [ "$1" == "canupdate" ]; then
 			exit 0
 			;;
 	esac
-	# if ! [[ $available =~ ^-?[0-9]+$ ]]; then
-	# 	echo "$available updates are available"
-	# 	exit 0
-	# else
-	# 	echo "No updates are available"
-	# 	exit 12
-	# fi
 fi
 
 # run the update script
