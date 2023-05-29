@@ -17,7 +17,11 @@ for path in Path("/storage/roms").rglob("*/gamelist.xml"):
         game_path = game.find("path").text
         reg = re.search(disc_regex, game_path)
         if reg is not None:
-            new_game_title = game.find("name").text + " " + reg.group(0)
+            new_game_title = (
+                game.find("name").text.replace(reg.group(0), "").strip()
+                + " "
+                + reg.group(0)
+            )
             game.find("name").text = new_game_title
             made_changes = True
 
