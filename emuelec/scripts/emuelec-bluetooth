@@ -1,0 +1,44 @@
+#!/usr/bin/env python
+
+from subprocess import Popen, PIPE
+from bluetool import Bluetooth
+
+
+def execute(cmd):
+    out = []
+    with Popen(cmd, stdout=PIPE, bufsize=1, universal_newlines=True) as p:
+        for line in p.stdout:
+            out.append(line)
+    return out
+
+
+def pair_device(mac):
+    trust = execute(["bluetoothctl", "trust", mac])
+    print(trust)
+    pair = execute(["bluetoothctl", "pair", mac])
+    print(pair)
+    connect = execute(["bluetoothctl", "connect", mac])
+    print(connect)
+
+
+if __name__ == "__main__":
+    bt = Bluetooth()
+    print("Scanning available devices for 10 seconds, please wait...")
+    execute(["bluetoothctl", "power", "on"])
+    execute(["bluetoothctl", "agent", "on"])
+    execute(["bluetoothctl", "discoverable", "on"])
+    execute(["bluetoothctl", "pairable", "on"])
+    execute(["bluetoothctl", "--timeout", "10", "scan", "on"])
+
+    # time.sleep(10)
+    print("listing pairable devices, please wait...")
+
+    devices = execute(["bluetoothctl", "devices"])
+    for device in devices:
+        isGamepad = any(
+            cont in device.lower() for cont in ["controller", "input", "joypad"]
+        )
+        name = device[25:-2]
+        mac = device[7 : 7 + 17]
+        if isGamepad:
+            pair_device(mac)
