@@ -7,13 +7,23 @@ if [ "$1" == "canupdate" ]; then
 	git remote update &>/dev/null
 	available=$(git status | grep "Your branch is behind" | sed 's/[^0-9]//g')
 
-	if ! [[ $available =~ '^[0-9]+$' ]]; then
-		echo "No updates are available" >&2
-		exit 12
-	else
-		echo "$available updates are available" >&2
-		exit 0
-	fi
+	case $available in
+		'' | *[!0-9]*)
+			echo "No updates are available"
+			exit 12
+			;;
+		*)
+			echo "$available updates are available"
+			exit 0
+			;;
+	esac
+	# if ! [[ $available =~ ^-?[0-9]+$ ]]; then
+	# 	echo "$available updates are available"
+	# 	exit 0
+	# else
+	# 	echo "No updates are available"
+	# 	exit 12
+	# fi
 fi
 
 # run the update script
