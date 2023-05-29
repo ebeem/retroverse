@@ -1,0 +1,24 @@
+#!/bin/python
+import re
+
+disc_regex = r"\(Disc \d\)"
+
+overrides = {
+    "quit_on_close_content": '"true"',
+    "quit_press_twice": '"false"',
+    "input_quit_gamepad_combo": '"4"',
+}
+
+# override config path with the overrides dictionary
+config_path = "/storage/.config/retroarch/retroarch.cfg"
+with open(config_path, "r") as f:
+    lines = f.readlines()
+    for i in range(len(lines)):
+        for override in overrides:
+            if lines[i].startswith(override):
+                lines[i] = override + " = " + overrides[override] + "\n"
+
+with open(config_path, "w") as f:
+    f.writelines(lines)
+
+print("configs updated")
