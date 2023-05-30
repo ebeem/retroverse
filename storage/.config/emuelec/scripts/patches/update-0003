@@ -7,6 +7,7 @@ overrides = {
     "quit_on_close_content": '"true"',
     "quit_press_twice": '"false"',
     "input_quit_gamepad_combo": '"4"',
+    "log_to_file": '"true"',
 }
 
 # override config path with the overrides dictionary
