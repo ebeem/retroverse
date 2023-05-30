@@ -1,23 +1,40 @@
 #!/bin/bash
 
 cd /storage/roms/retroverse
+arguments="$@"
 
 # check if any updates are available
-if [ "$1" == "canupdate" ]; then
-	git remote update &>/dev/null
-	available=$(git status | grep "Your branch is behind" | sed 's/[^0-9]//g')
+git remote update &>/dev/null
+available=$(git status | grep "Your branch is behind" | sed 's/[^0-9]//g')
+current=$(git rev-list --count HEAD)
 
-	case $available in
-		'' | *[!0-9]*)
-			echo "no"
-			exit 1
-			;;
-		*)
-			echo "($available updates are available)"
-			# run the update script
-			chmod 755 -R ./storage/.config/emuelec/scripts
-			./storage/.config/emuelec/scripts/retroverse-update
-			exit 12
-			;;
-	esac
+function check_update() {
+	if [[ "$arguments" == *"canupdate"* ]]; then
+		echo "UPSTREAM"
+	elif [[ "$arguments" == *"geturl"* ]]; then
+		echo "http://github.com/ebeem/retroverse"
+	elif [[ "$arguments" == *"getsize"* ]]; then
+		echo "~1MB"
+	fi
+}
+
+function forced_update() {
+	chmod 755 -R ./storage/.config/emuelec/scripts
+	./storage/.config/emuelec/scripts/emuelec-upgrade
+}
+
+case $available in
+	'' | *[!0-9]*)
+		echo "no"
+		exit 1
+		;;
+	*)
+		check_update
+		;;
+esac
+
+if [[ "$arguments" == *"forceupdate"* ]]; then
+	# run the update script
+	chmod 755 -R ./storage/.config/emuelec/scripts
+	./storage/.config/emuelec/scripts/emuelec-upgrade
 fi
