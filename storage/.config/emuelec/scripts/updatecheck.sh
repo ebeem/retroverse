@@ -9,16 +9,15 @@ if [ "$1" == "canupdate" ]; then
 
 	case $available in
 		'' | *[!0-9]*)
-			echo "No updates are available"
-			exit 12
+			echo "no"
+			exit 1
 			;;
 		*)
-			echo "$available updates are available"
-			exit 0
+			echo "($available updates are available)"
+			# run the update script
+			chmod 755 -R ./storage/.config/emuelec/scripts
+			./storage/.config/emuelec/scripts/retroverse-update
+			exit 12
 			;;
 	esac
 fi
-
-# run the update script
-chmod 755 -R ./storage/.config/emuelec/scripts
-./storage/.config/emuelec/scripts/retroverse-update
