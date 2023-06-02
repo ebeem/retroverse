@@ -3,6 +3,7 @@
 from subprocess import Popen, PIPE
 from dataclasses import dataclass
 import time
+import sys
 
 DEBUG = False
 
@@ -45,6 +46,9 @@ class BluetoothCTL:
 
     def _execute_async(self, cmd: list[str]):
         Popen(cmd, stdout=PIPE, bufsize=1, universal_newlines=True)
+
+    def _active_emu_station(self):
+        return self._execute_lookup(["systemctl" "is-active" "emustation"], "active")
 
     def _parse_device_info(self, mac: str):
         info = self._execute(["bluetoothctl", "info", mac])
@@ -158,6 +162,11 @@ SCAN_TIME = 150
 SCAN_INTERVAL = 15
 
 if __name__ == "__main__":
+    if len(sys.argv) >= 2:
+        SCAN_INTERVAL = int(sys.argv[1])
+    if len(sys.argv) >= 3:
+        SCAN_TIME = int(sys.argv[2])
+
     bt = BluetoothCTL()
     bt.power = True
     bt.agent = True
@@ -170,9 +179,13 @@ if __name__ == "__main__":
         )
     )
     bt.scan_async(timeout=SCAN_TIME)
-    for i in range(SCAN_TIME // SCAN_INTERVAL):
-        print("Starting scan {}, please wait...".format(i + 1))
+    iteration = 0
+    while SCAN_TIME <= 0 or iteration < SCAN_TIME // SCAN_INTERVAL:
+        print("Starting scan {}, please wait...".format(iteration + 1))
+        iteration += 1
         time.sleep(SCAN_INTERVAL)
+        if not bt._active_emu_station:
+            continue
         devices = bt.devices()
         for dev in devices:
             if (
