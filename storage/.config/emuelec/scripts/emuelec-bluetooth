@@ -48,7 +48,9 @@ class BluetoothCTL:
         Popen(cmd, stdout=PIPE, bufsize=1, universal_newlines=True)
 
     def _active_emu_station(self):
-        return self._execute_lookup(["systemctl" "is-active" "emustation"], "active")
+        return not self._execute_lookup(
+            ["systemctl" "is-active" "emustation"], "inactive"
+        )
 
     def _parse_device_info(self, mac: str):
         info = self._execute(["bluetoothctl", "info", mac])
@@ -133,6 +135,9 @@ class BluetoothCTL:
         else:
             self._execute_async(["bluetoothctl", "scan", "on"])
 
+    def scan_stop(self):
+        self._execute_async(["bluetoothctl", "scan", "off"])
+
     def devices(self) -> list[BluetoothDevice]:
         devs = self._execute(["bluetoothctl", "devices"])
         return [self._parse_device_info(dev.split()[1]) for dev in devs]
@@ -185,11 +190,18 @@ if __name__ == "__main__":
     )
     bt.scan_async(timeout=SCAN_INTERVAL)
     iteration = 0
+    emustation_active = True
+
     while SCAN_TIME <= 0 or iteration < SCAN_TIME // SCAN_INTERVAL:
         print("Starting scan {}, please wait...".format(iteration + 1))
         iteration += 1
+        if not emustation_active and bt._active_emu_station:
+            bt.scan_async(timeout=SCAN_INTERVAL)
+            emustation_active = True
         time.sleep(SCAN_INTERVAL)
         if not bt._active_emu_station:
+            bt.scan_stop()
+            emustation_active = False
             continue
         devices = bt.devices()
         for dev in devices:
