@@ -196,12 +196,15 @@ if __name__ == "__main__":
         print("Starting scan {}, please wait...".format(iteration + 1))
         iteration += 1
         if not emustation_active and bt._active_emu_station:
+            print("emustation is active now, resuming scan")
             bt.scan_async(timeout=SCAN_INTERVAL)
             emustation_active = True
         time.sleep(SCAN_INTERVAL)
         if not bt._active_emu_station:
-            bt.scan_stop()
-            emustation_active = False
+            if emustation_active:
+                print("emustation is inactive now, stopping scan")
+                bt.scan_stop()
+                emustation_active = False
             continue
         devices = bt.devices()
         for dev in devices:
