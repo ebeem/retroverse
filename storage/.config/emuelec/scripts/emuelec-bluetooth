@@ -126,7 +126,12 @@ class BluetoothCTL:
         self._execute(["bluetoothctl", "--timeout", str(timeout), "scan", "on"])
 
     def scan_async(self, timeout=10):
-        self._execute_async(["bluetoothctl", "--timeout", str(timeout), "scan", "on"])
+        if timeout > 0:
+            self._execute_async(
+                ["bluetoothctl", "--timeout", str(timeout), "scan", "on"]
+            )
+        else:
+            self._execute_async(["bluetoothctl", "scan", "on"])
 
     def devices(self) -> list[BluetoothDevice]:
         devs = self._execute(["bluetoothctl", "devices"])
@@ -158,8 +163,8 @@ class BluetoothCTL:
         )
 
 
-SCAN_TIME = 150
 SCAN_INTERVAL = 15
+SCAN_TIME = 150
 
 if __name__ == "__main__":
     if len(sys.argv) >= 2:
@@ -178,7 +183,7 @@ if __name__ == "__main__":
             SCAN_TIME, SCAN_INTERVAL
         )
     )
-    bt.scan_async(timeout=SCAN_TIME)
+    bt.scan_async(timeout=SCAN_INTERVAL)
     iteration = 0
     while SCAN_TIME <= 0 or iteration < SCAN_TIME // SCAN_INTERVAL:
         print("Starting scan {}, please wait...".format(iteration + 1))
