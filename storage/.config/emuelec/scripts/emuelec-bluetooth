@@ -48,8 +48,8 @@ class BluetoothCTL:
     def _execute_async(self, cmd: list[str]):
         Popen(cmd, stdout=PIPE, bufsize=1, universal_newlines=True)
 
-    def _active_emu_station(self):
-        return self._execute_lookup(["ps", "-ef"], "emulationstation --log-path")
+    def _active_game(self):
+        return self._execute_lookup(["ps", "-ef"], "emuelecRunEmu.sh")
 
     def _bluetooth_running(self):
         out = self._execute(["ps", "-ef"])
@@ -142,7 +142,7 @@ class BluetoothCTL:
             self._execute_async(["bluetoothctl", "scan", "on"])
 
     def scan_stop(self):
-        self._execute_async(["bluetoothctl", "scan", "off"])
+        self._execute_async(["pkill", "-f", "bluetoothctl scan on"])
 
     def devices(self) -> list[BluetoothDevice]:
         devs = self._execute(["bluetoothctl", "devices"])
@@ -184,6 +184,7 @@ if __name__ == "__main__":
         SCAN_TIME = int(sys.argv[2])
 
     bt = BluetoothCTL()
+
     if bt._bluetooth_running():
         exit()
 
@@ -197,24 +198,29 @@ if __name__ == "__main__":
             SCAN_TIME, SCAN_INTERVAL
         )
     )
-    bt.scan_async(timeout=SCAN_INTERVAL)
+    bt.scan_async(timeout=SCAN_TIME)
     iteration = 0
-    emustation_active = True
+    in_game = False
 
     while SCAN_TIME <= 0 or iteration < SCAN_TIME // SCAN_INTERVAL:
         print("Starting scan {}, please wait...".format(iteration + 1))
         iteration += 1
-        if not emustation_active and bt._active_emu_station:
+
+        # decide whether we should stop or resume scanning and pairing
+        if not bt._active_game() and in_game:
             print("emustation is active now, resuming scan")
-            bt.scan_async(timeout=SCAN_INTERVAL)
-            emustation_active = True
+            bt.scan_async(timeout=SCAN_TIME)
+            in_game = False
+        elif bt._active_game() and not in_game:
+            print("emustation is inactive now, stopping scan")
+            bt.scan_stop()
+            in_game = True
+
         time.sleep(SCAN_INTERVAL)
-        if not bt._active_emu_station:
-            if emustation_active:
-                print("emustation is inactive now, stopping scan")
-                bt.scan_stop()
-                emustation_active = False
+
+        if bt._active_game():
             continue
+
         devices = bt.devices()
         for dev in devices:
             if (
