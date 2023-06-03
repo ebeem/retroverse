@@ -187,7 +187,7 @@ if __name__ == "__main__":
         SCAN_TIME = int(sys.argv[2])
 
     bt = BluetoothCTL()
-    if bt._bluetooth_running:
+    if bt._bluetooth_running():
         exit()
 
     bt.power = True
