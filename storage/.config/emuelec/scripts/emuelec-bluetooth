@@ -53,12 +53,9 @@ class BluetoothCTL:
 
     def _bluetooth_running(self):
         out = self._execute(["ps", "-ef"])
-        for i in range(len(out)):
-            if i == 0 and str(os.getpid()) in out[i]:
-                return False
-            if "emuelec-bluetooth 15 -1" in out[i]:
-                return True
-
+        for o in out:
+            if "emuelec-bluetooth 15 -1" in o:
+                return False if str(os.getpid()) in o else True
         return False
 
     def _parse_device_info(self, mac: str):
