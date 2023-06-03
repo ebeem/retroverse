@@ -10,7 +10,7 @@ current=$(git rev-list --count HEAD)
 
 function check_update() {
 	if [[ "$arguments" == *"canupdate"* ]]; then
-		echo "1.0 $(current + available)"
+		echo "1.0 $($current + $available)"
 	elif [[ "$arguments" == *"geturl"* ]]; then
 		echo "http://github.com/ebeem/retroverse"
 	elif [[ "$arguments" == *"getsize"* ]]; then
