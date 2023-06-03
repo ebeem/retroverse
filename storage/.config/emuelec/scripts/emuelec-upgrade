@@ -16,4 +16,9 @@ for file in /storage/.config/emuelec/scripts/patches/*; do
     "$file"
 done
 
+# write the current version
+cd /storage/roms/retroverse
+current_version=$(git rev-list --count HEAD)
+echo "1.0$current_version" >/storage/.config/EE_VERSION
+
 echo "Done. Please reboot the system so changes take effect!"
