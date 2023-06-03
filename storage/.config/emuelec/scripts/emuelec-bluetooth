@@ -4,6 +4,7 @@ from subprocess import Popen, PIPE
 from dataclasses import dataclass
 import time
 import sys
+import os
 
 DEBUG = False
 
@@ -52,12 +53,13 @@ class BluetoothCTL:
 
     def _bluetooth_running(self):
         out = self._execute(["ps", "-ef"])
-        counter = 0
-        for o in out:
-            if "emuelec-bluetooth 15 -1" in o:
-                counter += 1
+        for i in range(len(out)):
+            if i == 0 and str(os.getpid()) in out[i]:
+                return False
+            if "emuelec-bluetooth 15 -1" in out[i]:
+                return True
 
-        return counter > 1
+        return False
 
     def _parse_device_info(self, mac: str):
         info = self._execute(["bluetoothctl", "info", mac])
