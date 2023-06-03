@@ -50,6 +50,15 @@ class BluetoothCTL:
     def _active_emu_station(self):
         return self._execute_lookup(["ps", "-ef"], "emulationstation --log-path")
 
+    def _bluetooth_running(self):
+        out = self._execute(["ps", "-ef"])
+        counter = 0
+        for o in out:
+            if "emuelec-bluetooth 15 -1" in o:
+                counter += 1
+
+        return counter > 1
+
     def _parse_device_info(self, mac: str):
         info = self._execute(["bluetoothctl", "info", mac])
         dev = BluetoothDevice(
@@ -176,6 +185,9 @@ if __name__ == "__main__":
         SCAN_TIME = int(sys.argv[2])
 
     bt = BluetoothCTL()
+    if bt._bluetooth_running:
+        exit()
+
     bt.power = True
     bt.agent = True
     bt.discoverable = True
