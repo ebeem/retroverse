@@ -3,23 +3,96 @@ import re
 
 disc_regex = r"\(Disc \d\)"
 
-overrides = {
+
+emuelec_overrides = {
+    "ee_ssh.enabled": 1,
+    "ee_bootvideo.enabled": 0,
+    "global.showFPS": 0,
+    "global.bezel": 1,
+    "ee_splash.enabled": 1,
+    "log_to_file": '"true"',
+    "system.hostname": "RetroVerse",
+    "wifi.enabled": 1,
+    "audio.device": "auto",
+    "audio.volume": 100,
+    "audio.bgmusic": 1,
+    "controllers.bluetooth.enabled": 1,
+    "system.language": "en_US",
+    "system.timezone": "Asia/Riyadh",
+    "updates.enabled": 1,
+    "updates.type": "stable",
+    "audio.display_titles": 1,
+    "audio.display_titles_time": 10,
+    "audio.persystem": 0,
+    "duckstation_auto_gamepad": 0,
+    "snes.core": "snes9x",
+    "snes.emulator": "libretro",
+    "psx.core": "swanstation",
+    "psx.emulator": "libretro",
+    "n64.core": "mupen64plus_next",
+    "n64.emulator": "libretro",
+    "psp.core": "PPSSPPSDL",
+    "psp.emulator": "PPSSPPSDL",
+    "gamegear.core": "genesis_plus_gx",
+    "gamegear.emulator": "libretro",
+    "gamegear.shaderset": "scalenx/scale3x.glslp",
+    "nes.core": "nestopia",
+    "nes.emulator": "libretro",
+    "nes.shaderset": "scalehq/2xScaleHQ.glslp",
+    "genesis.core": "genesis_plus_gx",
+    "genesis.emulator": "libretro",
+    "n64.maxperf": 1,
+    "n64.shaderset": "none",
+    "n64.ratio": "4/3",
+    "n64.integerscale": 0,
+    "n64.integerscaleoverscale": 0,
+    "psx.ratio": "4/3",
+    "atari2600.ratio": "full",
+    "msx.ratio": "4/3",
+    "msx2.ratio": "4/3",
+    "global.ratio": "core",
+    "global.shaderset": "scalehq/2xScaleHQ.glslp",
+    "global.integerscale": 0,
+    "global.integerscaleoverscale": 0,
+    "global.rewind": 0,
+    "global.smooth": 0,
+}
+
+retroarch_overrides = {
     "quit_on_close_content": '"true"',
     "quit_press_twice": '"false"',
     "input_quit_gamepad_combo": '"4"',
     "log_to_file": '"true"',
 }
 
-# override config path with the overrides dictionary
-config_path = "/storage/.config/retroarch/retroarch.cfg"
-with open(config_path, "r") as f:
-    lines = f.readlines()
-    for i in range(len(lines)):
-        for override in overrides:
-            if lines[i].startswith(override):
-                lines[i] = override + " = " + overrides[override] + "\n"
 
-with open(config_path, "w") as f:
-    f.writelines(lines)
+# override emuelec config path with the emuelec_overrides dictionary
+def configure_emuelec():
+    config_path = "/storage/.config/emuelec/configs/emuelec.conf"
+    with open(config_path, "r") as f:
+        lines = f.readlines()
+        for i in range(len(lines)):
+            for override in retroarch_overrides:
+                if lines[i].startswith(override):
+                    lines[i] = override + " = " + retroarch_overrides[override] + "\n"
 
+    with open(config_path, "w") as f:
+        f.writelines(lines)
+
+
+# override config path with the retroarch_overrides dictionary
+def configure_retroarch():
+    config_path = "/storage/.config/retroarch/retroarch.cfg"
+    with open(config_path, "r") as f:
+        lines = f.readlines()
+        for i in range(len(lines)):
+            for override in retroarch_overrides:
+                if lines[i].startswith(override):
+                    lines[i] = override + " = " + retroarch_overrides[override] + "\n"
+
+    with open(config_path, "w") as f:
+        f.writelines(lines)
+
+
+configure_retroarch()
 print("configs updated")
