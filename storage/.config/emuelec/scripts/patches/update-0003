@@ -72,9 +72,9 @@ def configure_emuelec():
     with open(config_path, "r") as f:
         lines = f.readlines()
         for i in range(len(lines)):
-            for override in retroarch_overrides:
+            for override in emuelec_overrides:
                 if lines[i].startswith(override):
-                    lines[i] = override + " = " + retroarch_overrides[override] + "\n"
+                    lines[i] = override + " = " + emuelec_overrides[override] + "\n"
 
     with open(config_path, "w") as f:
         f.writelines(lines)
