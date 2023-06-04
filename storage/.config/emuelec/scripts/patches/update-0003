@@ -95,4 +95,5 @@ def configure_retroarch():
 
 
 configure_retroarch()
+configure_emuelec()
 print("configs updated")
