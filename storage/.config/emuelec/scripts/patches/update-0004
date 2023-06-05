@@ -1,2 +1,2 @@
 #!/bin/bash
-rm -f -- /storage/.config/emuelec/scripts/setsettings.sh
+# rm -f -- /storage/.config/emuelec/scripts/setsettings.sh

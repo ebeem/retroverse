@@ -35,7 +35,7 @@ emuelec_overrides = {
     "psp.emulator": "PPSSPPSDL",
     "gamegear.core": "genesis_plus_gx",
     "gamegear.emulator": "libretro",
-    "gamegear.shaderset": "scalenx/scale3x.glslp",
+    "gamegear.shaderset": "scalehq/2xScaleHQ.glslp",
     "nes.core": "nestopia",
     "nes.emulator": "libretro",
     "nes.shaderset": "scalehq/2xScaleHQ.glslp",
