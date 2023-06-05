@@ -10,7 +10,7 @@ emuelec_overrides = {
     "global.showFPS": 0,
     "global.bezel": 1,
     "ee_splash.enabled": 1,
-    "log_to_file": '"true"',
+    "log_to_file": "true",
     "system.hostname": "RetroVerse",
     "wifi.enabled": 1,
     "audio.device": "auto",
@@ -74,9 +74,7 @@ def configure_emuelec():
         for i in range(len(lines)):
             for override in emuelec_overrides:
                 if lines[i].startswith(override):
-                    lines[i] = (
-                        override + " = " + str(emuelec_overrides[override]) + "\n"
-                    )
+                    lines[i] = override + "=" + str(emuelec_overrides[override]) + "\n"
 
     with open(config_path, "w") as f:
         f.writelines(lines)
