@@ -72,10 +72,15 @@ def configure_emuelec():
     config_path = "/storage/.config/emuelec/configs/emuelec.conf"
     with open(config_path, "r") as f:
         lines = f.readlines()
-        for i in range(len(lines)):
-            for override in emuelec_overrides:
+        for override in emuelec_overrides:
+            found = False
+            for i in range(len(lines)):
                 if lines[i].startswith(override):
                     lines[i] = override + "=" + str(emuelec_overrides[override]) + "\n"
+                    found = True
+                    break
+            if not found:
+                lines.append(override + " = " + str(emuelec_overrides[override]) + "\n")
 
     with open(config_path, "w") as f:
         f.writelines(lines)
@@ -86,12 +91,19 @@ def configure_retroarch():
     config_path = "/storage/.config/retroarch/retroarch.cfg"
     with open(config_path, "r") as f:
         lines = f.readlines()
-        for i in range(len(lines)):
-            for override in retroarch_overrides:
+        for override in retroarch_overrides:
+            found = False
+            for i in range(len(lines)):
                 if lines[i].startswith(override):
                     lines[i] = (
                         override + " = " + str(retroarch_overrides[override]) + "\n"
                     )
+                    found = True
+                    break
+            if not found:
+                lines.append(
+                    override + " = " + str(retroarch_overrides[override]) + "\n"
+                )
 
     with open(config_path, "w") as f:
         f.writelines(lines)
