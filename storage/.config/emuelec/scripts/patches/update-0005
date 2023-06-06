@@ -494,7 +494,7 @@ cores_overrides = {
 # override emuelec config path with the emuelec_overrides dictionary
 def configure_cores():
     for core in cores_overrides:
-        config_path = "/storage/.config/retroarch/config/{}'/{}.opt".format(core, core)
+        config_path = "/storage/.config/retroarch/config/{}/{}.opt".format(core, core)
         with open(config_path, "r") as f:
             lines = f.readlines()
             for i in range(len(lines)):
