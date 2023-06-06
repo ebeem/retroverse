@@ -1,5 +1,5 @@
 #!/bin/python
-import re
+import os
 
 cores_overrides = {
     # atari-2600
@@ -495,14 +495,33 @@ cores_overrides = {
 def configure_cores():
     for core in cores_overrides:
         config_path = "/storage/.config/retroarch/config/{}/{}.opt".format(core, core)
+        print("path is " + config_path)
+        basedir = os.path.dirname(config_path)
+        if not os.path.exists(basedir):
+            print("creating directory " + basedir)
+            os.makedirs(basedir)
+        if not os.path.exists(config_path):
+            print("creating file " + config_path)
+            open(config_path, "a").close()
+
         with open(config_path, "r") as f:
             lines = f.readlines()
-            for i in range(len(lines)):
-                for override in cores_overrides[core]:
+            for override in cores_overrides[core]:
+                found = False
+                for i in range(len(lines)):
                     if lines[i].startswith(override):
                         lines[i] = (
-                            override + " = " + str(cores_overrides[override]) + "\n"
+                            override
+                            + " = "
+                            + str(cores_overrides[core][override])
+                            + "\n"
                         )
+                        found = True
+                        break
+                if not found:
+                    lines.append(
+                        override + " = " + str(cores_overrides[core][override]) + "\n"
+                    )
 
         with open(config_path, "w") as f:
             f.writelines(lines)
