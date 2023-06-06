@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-emuelec-bluetooth 15 -1 &
+emuelec-bluetooth 15 -1
 
 # write version number
 cd /storage/roms/retroverse
