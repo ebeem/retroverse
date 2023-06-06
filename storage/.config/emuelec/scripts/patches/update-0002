@@ -11,8 +11,13 @@ for path in Path("/storage/roms").rglob("*/gamelist.xml"):
     made_changes = False
 
     # parsing all title names
-    doc = ET.parse(path)
+    if path in [
+        "/storage/roms/ports_scripts/gamelist.xml",
+        "/storage/roms/ports/gamelist.xml",
+    ]:
+        continue
 
+    doc = ET.parse(path)
     for game in doc.findall("game"):
         game_path = game.find("path").text
         reg = re.search(disc_regex, game_path)
