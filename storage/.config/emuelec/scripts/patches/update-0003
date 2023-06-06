@@ -80,7 +80,7 @@ def configure_emuelec():
                     found = True
                     break
             if not found:
-                lines.append(override + " = " + str(emuelec_overrides[override]) + "\n")
+                lines.append(override + "=" + str(emuelec_overrides[override]) + "\n")
 
     with open(config_path, "w") as f:
         f.writelines(lines)
