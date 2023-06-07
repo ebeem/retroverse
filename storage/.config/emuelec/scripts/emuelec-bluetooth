@@ -218,11 +218,11 @@ if __name__ == "__main__":
         iteration += 1
 
         # decide whether we should stop or resume scanning and pairing
-        if not is_in_game and in_game:
+        if not is_in_game() and in_game:
             print("emustation is active now, resuming scan")
             bt.scan_async(timeout=SCAN_TIME)
             in_game = False
-        elif is_in_game and not in_game:
+        elif is_in_game() and not in_game:
             print("emustation is inactive now, stopping scan")
             bt.scan_stop()
             in_game = True
