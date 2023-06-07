@@ -56,7 +56,7 @@ emuelec_overrides = {
     "global.integerscaleoverscale": 0,
     "global.rewind": 0,
     "global.smooth": 0,
-    "global.runahead": 2,
+    "global.runahead": 0,
 }
 
 retroarch_overrides = {
