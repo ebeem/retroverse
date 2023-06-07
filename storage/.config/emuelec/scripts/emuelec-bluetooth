@@ -230,7 +230,7 @@ if __name__ == "__main__":
         time.sleep(SCAN_INTERVAL)
 
         # stop if a game is running
-        if is_in_game:
+        if is_in_game():
             continue
 
         devices = bt.devices()
